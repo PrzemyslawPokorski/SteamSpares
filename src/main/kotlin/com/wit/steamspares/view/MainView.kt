@@ -17,8 +17,7 @@ class MainView : View("Steam Spares") {
     var codeField : TextField by singleAssign()
     var notesField : TextField by singleAssign()
     var usedButton : Toggle by singleAssign()
-
-    val games = listOf(
+    var games = listOf(
             Game(1, "Name 1", "Code 1", false, "A note"),
             Game(2, "Name 2", "Code 2", false, "A note"),
             Game(3, "Name 3", "Code 3", true),
@@ -112,16 +111,11 @@ class MainView : View("Steam Spares") {
 
             //RIGHT PANEL
             hbox {
-                val games = listOf(
-                        Game(1, "Name 1", "Code 1", false, "A note"),
-                        Game(2, "Name 2", "Code 2", false, "A note"),
-                        Game(3, "Name 3", "Code 3", true),
-                        Game(4, "Name 3", "Code 3", false)
-                ).asObservable()
+                var (used, unused) = games.partition { it.status }
 
                 tabpane(){
                     tab("Unused"){
-                        tableview<Game>(games) {
+                        tableview<Game>(unused.asObservable()) {
                             readonlyColumn("Name", Game::name)
                             readonlyColumn("Code", Game::code)
                             readonlyColumn("Notes", Game::notes)
@@ -130,7 +124,11 @@ class MainView : View("Steam Spares") {
                         }
                     }
                     tab("Used"){
-                        tableview<Game> {
+                        tableview<Game>(used.asObservable()) {
+                            readonlyColumn("Name", Game::name)
+                            readonlyColumn("Code", Game::code)
+                            readonlyColumn("Notes", Game::notes)
+
                             fitToParentSize()
 //                    column("Name", )
 
