@@ -19,10 +19,10 @@ class MainView : View("Steam Spares") {
     var usedButton : Toggle by singleAssign()
 
     val games = listOf(
-            Game("Name 1", "Code 1", false, "A note"),
-            Game("Name 2", "Code 2", false, "A note"),
-            Game("Name 3", "Code 3", true),
-            Game("Name 3", "Code 3", false)
+            Game(1, "Name 1", "Code 1", false, "A note"),
+            Game(2, "Name 2", "Code 2", false, "A note"),
+            Game(3, "Name 3", "Code 3", true),
+            Game(4, "Name 3", "Code 3", false)
     )
 
     override val root = vbox {
@@ -113,16 +113,18 @@ class MainView : View("Steam Spares") {
             //RIGHT PANEL
             hbox {
                 val games = listOf(
-                        Game("Name 1", "Code 1", false, "A note"),
-                        Game("Name 2", "Code 2", false, "A note"),
-                        Game("Name 3", "Code 3", true),
-                        Game("Name 3", "Code 3", false)
-                )
+                        Game(1, "Name 1", "Code 1", false, "A note"),
+                        Game(2, "Name 2", "Code 2", false, "A note"),
+                        Game(3, "Name 3", "Code 3", true),
+                        Game(4, "Name 3", "Code 3", false)
+                ).asObservable()
 
                 tabpane(){
                     tab("Unused"){
-                        tableview<Game>(games.asObservable()) {
-//                    column("Name", Game::name)
+                        tableview<Game>(games) {
+                            readonlyColumn("Name", Game::name)
+                            readonlyColumn("Code", Game::code)
+                            readonlyColumn("Notes", Game::notes)
 
                             fitToParentSize()
                         }
