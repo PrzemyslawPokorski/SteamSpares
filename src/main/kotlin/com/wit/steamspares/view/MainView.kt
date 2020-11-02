@@ -3,20 +3,21 @@ package com.wit.steamspares.view
 import com.wit.steamspares.app.Styles
 import com.wit.steamspares.controller.MainController
 import com.wit.steamspares.model.Game
-import com.wit.steamspares.model.GameModel
+//import com.wit.steamspares.model.GameModel
 import javafx.geometry.Pos
 import javafx.scene.control.TextField
 import javafx.scene.control.Toggle
+import javafx.scene.control.ToggleButton
 import tornadofx.*
 
 class MainView : View("Steam Spares") {
     val controller : MainController by inject()
-    val model : GameModel by inject()
+//    val model : GameModel by inject()
 
     var nameField : TextField by singleAssign()
     var codeField : TextField by singleAssign()
     var notesField : TextField by singleAssign()
-    var usedButton : Toggle by singleAssign()
+    var usedButton : ToggleButton by singleAssign()
     var games = listOf(
             Game(1, "Name 1", "Code 1", false, "A note"),
             Game(2, "Name 2", "Code 2", false, "A note"),
@@ -66,21 +67,10 @@ class MainView : View("Steam Spares") {
                     togglebutton("Unused"){
                         usedButton = this
 
-                        addClass(Styles.toggle)
-
-
-                        text = if (isSelected) "Used" else "Unused"
-
-                        style{
-                            backgroundColor += if (isSelected) c("red") else c("green")
-                        }
+                        addClass(Styles.toggle_unused)
 
                         action{
-                            text = if (text == "Unused") "Used" else "Unused"
-
-                            style{
-                                backgroundColor += if (isSelected) c("red") else c("green")
-                            }
+                            controller.statusToggle(this)
                         }
                     }
                 }
@@ -116,9 +106,17 @@ class MainView : View("Steam Spares") {
                 tabpane(){
                     tab("Unused"){
                         tableview<Game>(unused.asObservable()) {
-                            readonlyColumn("Name", Game::name)
+                            readonlyColumn("Name", Game::name).makeEditable()
                             readonlyColumn("Code", Game::code)
                             readonlyColumn("Notes", Game::notes)
+
+                            onLeftClick {
+                                nameField.text = selectedItem?.name ?: "Name not given"
+                                codeField.text = selectedItem?.code ?: "Code missing"
+                                if(selectedItem?.status != usedButton.isSelected)
+                                    controller.statusToggle(usedButton, true)
+                                notesField.text = selectedItem?.notes
+                            }
 
                             fitToParentSize()
                         }
@@ -129,9 +127,15 @@ class MainView : View("Steam Spares") {
                             readonlyColumn("Code", Game::code)
                             readonlyColumn("Notes", Game::notes)
 
-                            fitToParentSize()
-//                    column("Name", )
+                            onLeftClick {
+                                nameField.text = selectedItem?.name ?: "Name not given"
+                                codeField.text = selectedItem?.code ?: "Code missing"
+                                if(selectedItem?.status != usedButton.isSelected)
+                                    controller.statusToggle(usedButton, true)
+                                notesField.text = selectedItem?.notes
+                            }
 
+                            fitToParentSize()
                         }
                     }
                 }

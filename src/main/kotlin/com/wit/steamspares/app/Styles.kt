@@ -11,7 +11,8 @@ class Styles : Stylesheet() {
         val field_label by cssclass()
         val textfield by cssclass()
         val table by cssclass()
-        val toggle by cssclass()
+        val toggle_used by cssclass()
+        val toggle_unused by cssclass()
         val button by cssclass()
     }
 
@@ -37,12 +38,22 @@ class Styles : Stylesheet() {
             minWidth = 200.px
         }
 
-        toggle{
+        toggle_used{
             minHeight = 30.px
             minWidth = 200.px
             fontWeight = FontWeight.BOLD
             alignment = Pos.CENTER
             textFill = Color.WHITE
+            backgroundColor += c("red")
+        }
+
+        toggle_unused{
+            minHeight = 30.px
+            minWidth = 200.px
+            fontWeight = FontWeight.BOLD
+            alignment = Pos.CENTER
+            textFill = Color.WHITE
+            backgroundColor += c("green")
         }
 
         button{
