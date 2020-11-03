@@ -13,17 +13,6 @@ class MainController : Controller() {
     var gson = GsonBuilder().setPrettyPrinting().create()
     var gamelist = loadFromJson()
 
-    init {
-        println("Controller init")
-    }
-//
-//    var gamelist = mutableListOf<Game>(
-//            Game("Name 1", "Code 1", false, "A note"),
-//            Game("Name 2", "Code 2", false, "A note"),
-//            Game("Name 3", "Code 3", true),
-//            Game("Name 4", "Code 4", false)
-//    )
-
     fun loadFromJson() : MutableList<Game>{
         val jsonString: String
         try {

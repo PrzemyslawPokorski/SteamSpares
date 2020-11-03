@@ -97,7 +97,6 @@ class MainView : View("Steam Spares") {
                         addClass(Styles.button)
 
                         action {
-                            println(selectedGame)
 
                             val name = nameField.text
                             val code = codeField.text
@@ -230,6 +229,7 @@ class MainView : View("Steam Spares") {
             (it.name.contains(filter, ignoreCase = true)) ||
                     ((it.notes != null) && (it.notes!!.contains(filter)))
         }
+        filtered = filtered.sortedBy { it.name }
         var (used, unused) = filtered.partition { it.status }
 
         unusedData.setAll(unused)
