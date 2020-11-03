@@ -35,6 +35,8 @@ class MainView : View("Steam Spares") {
     val usedData = FXCollections.observableArrayList<Game>()
     val unusedData = FXCollections.observableArrayList<Game>()
 
+    var selectedGame : Game? = null
+
     override val root = vbox {
         label(title) {
             addClass(Styles.heading)
@@ -141,12 +143,14 @@ class MainView : View("Steam Spares") {
                             readonlyColumn("Notes", Game::notes)
 
                             onLeftClick {
-                                if(selectedItem != null) {
+                                if(selectedItem != null && selectedItem != selectedGame) {
                                     nameField.text = selectedItem?.name ?: "Name not given"
                                     codeField.text = selectedItem?.code ?: "Code missing"
                                     //If status is not true/false then data is corrupted (?)
                                     setStatus(selectedItem?.status!!)
                                     notesField.text = selectedItem?.notes
+
+                                    selectedGame = selectedItem
                                 }
                                 else
                                     clearSelections()
@@ -165,12 +169,14 @@ class MainView : View("Steam Spares") {
                             readonlyColumn("Notes", Game::notes)
 
                             onLeftClick {
-                                if(selectedItem != null) {
+                                if(selectedItem != null && selectedItem != selectedGame) {
                                     nameField.text = selectedItem?.name ?: "Name not given"
                                     codeField.text = selectedItem?.code ?: "Code missing"
                                     //If status is not true/false then data is corrupted (?)
                                     setStatus(selectedItem?.status!!)
                                     notesField.text = selectedItem?.notes
+
+                                    selectedGame = selectedItem
                                 }
                                 else
                                     clearSelections()
@@ -211,6 +217,8 @@ class MainView : View("Steam Spares") {
         codeField.clear()
         setStatus(false)
         notesField.clear()
+
+        selectedGame = null
 
     }
 
