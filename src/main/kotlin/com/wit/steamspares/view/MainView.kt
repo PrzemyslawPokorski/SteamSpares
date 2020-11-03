@@ -12,7 +12,6 @@ import tornadofx.DefaultErrorHandler.Companion.filter
 
 class MainView : View("Steam Spares") {
     val controller : MainController by inject()
-//    val model : GameModel by inject()
 
     var nameField : TextField by singleAssign()
     var codeField : TextField by singleAssign()
