@@ -11,6 +11,7 @@ import javafx.scene.control.TableView
 import javafx.scene.control.TextField
 import javafx.scene.control.ToggleButton
 import tornadofx.*
+import tornadofx.DefaultErrorHandler.Companion.filter
 
 class MainView : View("Steam Spares") {
     val controller : MainController by inject()
@@ -101,7 +102,12 @@ class MainView : View("Steam Spares") {
                     alignment = Pos.CENTER
                     button("Save") {
                         addClass(Styles.button)
+
+                        action {
+
+                        }
                     }
+
                     button("Delete"){
                         addClass(Styles.button)
                     }
@@ -119,11 +125,7 @@ class MainView : View("Steam Spares") {
                         obs, old, new ->
                         //Filter used and unused list by name contains?
                         println("Filter: " + new)
-                        var filtered = games.filter { it.name.contains(new, ignoreCase = true) }
-                        var (used, unused) = filtered.partition { it.status }
-
-                        unusedData.setAll(unused)
-                        usedData.setAll(used)
+                        setTablesData(new)
                     }
                 }
 
@@ -174,7 +176,15 @@ class MainView : View("Steam Spares") {
     init {
         setWindowMinSize(1200, 800)
 
-        var (used, unused) = games.partition { it.status }
+        setTablesData()
+    }
+
+    fun setTablesData(filter : String = ""){
+        var filtered = games.filter {
+            (it.name.contains(filter, ignoreCase = true)) ||
+                    ((it.notes != null) && (it.notes.contains(filter)))
+        }
+        var (used, unused) = filtered.partition { it.status }
 
         unusedData.setAll(unused)
         usedData.setAll(used)
