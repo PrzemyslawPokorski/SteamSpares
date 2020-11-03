@@ -100,29 +100,31 @@ class MainView : View("Steam Spares") {
                         action {
                             println(selectedGame)
 
+                            val name = nameField.text
+                            val code = codeField.text
+                            val used = usedButton.isSelected
+                            val note = notesField.text
+
                             //If adding new game
                             if(selectedGame == null){
-                                val name = nameField.text
-                                val code = codeField.text
-                                val used = usedButton.isSelected
-                                val note = notesField.text
-                                if (name != null && code != null)
+                                if (name != null && code != null && name != "" && code != "")
                                     controller.addToList(name, code, used, note)
                             }
                             //If changing existing
                             else{
                                 val id = selectedGame!!.id
-                                val name = nameField.text
-                                val code = codeField.text
-                                val used = usedButton.isSelected
-                                val note = notesField.text
-                                if (name != null && code != null)
+                                if (name != null && code != null && name != "" && code != "")
                                     controller.updateInList(id, name, code, used, note)
                             }
 
-                            setTablesData()
-                            clearSelections()
-                            controller.saveToJson()
+                            if (name != null && code != null && name != "" && code != "") {
+                                setTablesData()
+                                clearSelections()
+                                controller.saveToJson()
+                            }
+                            else{
+                                //TODO: Give some warning that name and code can't be null
+                            }
                         }
                     }
 
