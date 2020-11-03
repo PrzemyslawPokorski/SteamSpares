@@ -106,6 +106,7 @@ class MainView : View("Steam Spares") {
                         button("Save") {
                             addClass(Styles.button)
 
+
                             action {
 
                                 val name = nameField.text
@@ -182,9 +183,15 @@ class MainView : View("Steam Spares") {
                                 unusedTable = this
                                 fitToParentSize()
 
-                                readonlyColumn("Name", Game::name)
-                                readonlyColumn("Code", Game::code)
-                                readonlyColumn("Notes", Game::notes)
+                                readonlyColumn("Name", Game::name) {
+                                    prefWidth = 250.0
+                                }
+                                readonlyColumn("Code", Game::code) {
+                                    prefWidth = 150.0
+                                }
+                                readonlyColumn("Notes", Game::notes){
+                                    prefWidth = 300.0
+                                }
 
                                 onLeftClick {
                                     if (selectedItem != null && selectedItem != selectedGame) {
@@ -220,12 +227,14 @@ class MainView : View("Steam Spares") {
                                 usedTable = this
 
                                 readonlyColumn("Name", Game::name) {
-                                    prefWidth = 160.0
+                                    prefWidth = 250.0
                                 }
                                 readonlyColumn("Code", Game::code) {
-                                    prefWidth = 100.0
+                                    prefWidth = 150.0
                                 }
-                                readonlyColumn("Notes", Game::notes)
+                                readonlyColumn("Notes", Game::notes){
+                                    prefWidth = 300.0
+                                }
 
                                 onLeftClick {
                                     if (selectedItem != null && selectedItem != selectedGame) {

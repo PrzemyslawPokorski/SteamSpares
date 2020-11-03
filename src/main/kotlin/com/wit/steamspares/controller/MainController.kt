@@ -32,7 +32,6 @@ class MainController : Controller() {
 
     fun addToList(name: String, code: String, status: Boolean, notes: String? = null){
         val newGame = Game(name, code, status, notes)
-        println("Adding new game: $newGame")
         gamelist.add(newGame)
     }
 
@@ -44,7 +43,6 @@ class MainController : Controller() {
 
     fun updateInList(id: Int, name: String, code: String, status: Boolean, notes: String? = null){
         var game = gamelist.find { it.id == id }
-        println("Changing game: $game")
         if (game != null) {
             game.name = name
             game.code = code
