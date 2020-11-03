@@ -6,10 +6,7 @@ import com.wit.steamspares.model.Game
 import javafx.collections.FXCollections
 //import com.wit.steamspares.model.GameModel
 import javafx.geometry.Pos
-import javafx.scene.control.TableColumn
-import javafx.scene.control.TableView
-import javafx.scene.control.TextField
-import javafx.scene.control.ToggleButton
+import javafx.scene.control.*
 import tornadofx.*
 import tornadofx.DefaultErrorHandler.Companion.filter
 
@@ -153,6 +150,7 @@ class MainView : View("Steam Spares") {
                 }
 
                 tabpane(){
+                    tabClosingPolicy = TabPane.TabClosingPolicy.UNAVAILABLE
                     tab("Unused"){
                         tableview<Game>(unusedData) {
                             unusedTable = this
