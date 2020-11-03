@@ -4,11 +4,13 @@ import com.wit.steamspares.app.Styles
 import com.wit.steamspares.controller.MainController
 import com.wit.steamspares.model.Game
 import javafx.collections.FXCollections
-//import com.wit.steamspares.model.GameModel
+import javafx.event.EventHandler
 import javafx.geometry.Pos
 import javafx.scene.control.*
 import tornadofx.*
-import tornadofx.DefaultErrorHandler.Companion.filter
+import java.awt.Toolkit
+import java.awt.datatransfer.Clipboard
+import java.awt.datatransfer.StringSelection
 
 class MainView : View("Steam Spares") {
     val controller : MainController by inject()
@@ -20,6 +22,7 @@ class MainView : View("Steam Spares") {
     var usedButton : ToggleButton by singleAssign()
     var usedTable : TableView<Game> by singleAssign()
     var unusedTable : TableView<Game> by singleAssign()
+    var topText : Label by singleAssign()
 
     val usedData = FXCollections.observableArrayList<Game>()
     val unusedData = FXCollections.observableArrayList<Game>()
@@ -28,6 +31,7 @@ class MainView : View("Steam Spares") {
 
     override val root = vbox {
         label(title) {
+            topText = this
             addClass(Styles.heading)
             fitToParentWidth()
         }
@@ -70,8 +74,7 @@ class MainView : View("Steam Spares") {
 
                         addClass(Styles.toggle_unused)
 
-                        selectedProperty().addListener{
-                            obs, old, new ->
+                        selectedProperty().addListener{ obs, old, new ->
                             //Filter used and unused list by name contains?
                             setStatus(new, true)
                         }
@@ -122,7 +125,7 @@ class MainView : View("Steam Spares") {
                             }
                             else{
                                 alert(Alert.AlertType.WARNING, "Empty fields not allowed",
-                                "Name and Code fields can not be empty!")
+                                        "Name and Code fields can not be empty!")
                             }
                         }
                     }
@@ -150,8 +153,7 @@ class MainView : View("Steam Spares") {
                 textfield {
                     fitToParentWidth()
 
-                    textProperty().addListener{
-                        obs, old, new ->
+                    textProperty().addListener{ obs, old, new ->
                         //Filter used and unused list by name contains?
                         println("Filter: " + new)
                         setTablesData(new)
@@ -181,6 +183,20 @@ class MainView : View("Steam Spares") {
                                 }
                                 else
                                     clearSelections()
+                            }
+
+                            onUserSelect {
+                                val c: Clipboard = Toolkit.getDefaultToolkit().getSystemClipboard()
+                                val clip = selectedItem?.name + ": " + selectedItem?.code
+                                c.setContents(StringSelection(clip), StringSelection(clip))
+                                topText.text = "Code Copied !"
+                                //TODO: Find a way to display tooltip and hide after a while on double click
+//                                tooltip("Code copied to clipboard!"){
+//                                    onShown = EventHandler {
+//                                        println("Shown")
+//                                        this.text = ""
+//                                    }
+//                                }
                             }
 
                             fitToParentSize()
@@ -225,7 +241,7 @@ class MainView : View("Steam Spares") {
         clearSelections()
     }
 
-    fun setTablesData(filter : String = ""){
+    fun setTablesData(filter: String = ""){
         var filtered = controller.gamelist.filter {
             (it.name.contains(filter, ignoreCase = true)) ||
                     ((it.notes != null) && (it.notes!!.contains(filter)))
@@ -247,10 +263,10 @@ class MainView : View("Steam Spares") {
         notesField.clear()
 
         selectedGame = null
-
+        topText.text = title
     }
 
-    fun setStatus(used : Boolean = false, styleOnly : Boolean = false){
+    fun setStatus(used: Boolean = false, styleOnly: Boolean = false){
         if (used){
             usedButton.text = "Used"
             usedButton.removeClass(Styles.toggle_unused)
