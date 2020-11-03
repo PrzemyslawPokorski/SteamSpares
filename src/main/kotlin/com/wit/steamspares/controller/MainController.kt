@@ -1,17 +1,14 @@
 package com.wit.steamspares.controller
 
 import com.google.gson.Gson
-import com.wit.steamspares.app.Styles
+import com.google.gson.GsonBuilder
 import com.wit.steamspares.model.Game
-import javafx.collections.FXCollections
-import javafx.scene.control.ToggleButton
 import tornadofx.Controller
-import tornadofx.addClass
-import tornadofx.removeClass
-import java.io.FileWriter
+import java.io.File
+
 
 class MainController : Controller() {
-    var gson = Gson()
+    var gson = GsonBuilder().setPrettyPrinting().create()
 
     var gamelist = mutableListOf<Game>(
             Game("Name 1", "Code 1", false, "A note"),
@@ -22,25 +19,32 @@ class MainController : Controller() {
 
     fun loadFromJson(){
         //TODO: load games from json
+        val file = File("src/main/kotlin/com/wit/steamspares/data/games.json")
+
+        if(file.exists()){
+            gson.fromJson(file.path, Game::class.java)
+        }
+
     }
 
     fun saveToJson(){
-        gson.toJson(gamelist, FileWriter("src/main/kotlin/com/wit/steamspares/data/games.json"))
+        val jsonString = gson.toJson(gamelist)
+        File("src/main/kotlin/com/wit/steamspares/data/games.json").writeText(jsonString)
     }
 
-    fun addToList(name : String, code : String, status : Boolean, notes : String? = null){
+    fun addToList(name: String, code: String, status: Boolean, notes: String? = null){
         val newGame = Game(name, code, status, notes)
         println("Adding new game: $newGame")
         gamelist.add(newGame)
     }
 
-    fun removeFromList(id : Int){
+    fun removeFromList(id: Int){
         var game = gamelist.find { it.id == id }
         if(game != null)
             gamelist.remove(game)
     }
 
-    fun updateInList(id : Int, name : String, code : String, status : Boolean, notes : String? = null){
+    fun updateInList(id: Int, name: String, code: String, status: Boolean, notes: String? = null){
         var game = gamelist.find { it.id == id }
         println("Changing game: $game")
         if (game != null) {
