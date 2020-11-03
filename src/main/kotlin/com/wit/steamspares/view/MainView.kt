@@ -3,11 +3,12 @@ package com.wit.steamspares.view
 import com.wit.steamspares.app.Styles
 import com.wit.steamspares.controller.MainController
 import com.wit.steamspares.model.Game
+import javafx.beans.property.ReadOnlyIntegerWrapper
 import javafx.collections.FXCollections
-import javafx.event.EventHandler
 import javafx.geometry.Orientation
 import javafx.geometry.Pos
 import javafx.scene.control.*
+import javafx.util.Callback
 import tornadofx.*
 import java.awt.Toolkit
 import java.awt.datatransfer.Clipboard
@@ -182,6 +183,13 @@ class MainView : View("Steam Spares") {
                             tableview<Game>(unusedData) {
                                 unusedTable = this
                                 fitToParentSize()
+
+                                val idColumn = TableColumn<Game, Int>()
+                                idColumn.setCellValueFactory{
+                                    cell -> ReadOnlyIntegerWrapper(cell.value.id)
+                                }
+
+                                addColumnInternal(idColumn)
 
                                 readonlyColumn("Name", Game::name) {
                                     prefWidth = 250.0
