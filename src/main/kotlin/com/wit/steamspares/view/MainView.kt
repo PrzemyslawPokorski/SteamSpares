@@ -25,13 +25,6 @@ class MainView : View("Steam Spares") {
     var usedTable : TableView<Game> by singleAssign()
     var unusedTable : TableView<Game> by singleAssign()
 
-    var games = mutableListOf(
-            Game(1, "Name 1", "Code 1", false, "A note"),
-            Game(2, "Name 2", "Code 2", false, "A note"),
-            Game(3, "Name 3", "Code 3", true),
-            Game(4, "Name 3", "Code 3", false)
-    )
-
     val usedData = FXCollections.observableArrayList<Game>()
     val unusedData = FXCollections.observableArrayList<Game>()
 
@@ -108,7 +101,24 @@ class MainView : View("Steam Spares") {
                         addClass(Styles.button)
 
                         action {
-                            println(unusedTable.selectedItem)
+                            println(selectedGame)
+
+                            //If adding new game
+                            if(selectedGame == null){
+                                controller.addToList(
+                                        nameField.text, codeField.text, usedButton.isSelected, notesField.text
+                                )
+                            }
+                            //If changing existing
+                            else{
+                                controller.updateInList(
+                                        selectedGame!!.id,
+                                        nameField.text, codeField.text, usedButton.isSelected, notesField.text
+                                )
+                            }
+
+                            setTablesData()
+                            clearSelections()
                         }
                     }
 
@@ -199,9 +209,9 @@ class MainView : View("Steam Spares") {
     }
 
     fun setTablesData(filter : String = ""){
-        var filtered = games.filter {
+        var filtered = controller.gamelist.filter {
             (it.name.contains(filter, ignoreCase = true)) ||
-                    ((it.notes != null) && (it.notes.contains(filter)))
+                    ((it.notes != null) && (it.notes!!.contains(filter)))
         }
         var (used, unused) = filtered.partition { it.status }
 
