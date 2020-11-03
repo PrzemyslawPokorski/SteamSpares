@@ -1,5 +1,6 @@
 package com.wit.steamspares.controller
 
+import com.google.gson.Gson
 import com.wit.steamspares.app.Styles
 import com.wit.steamspares.model.Game
 import javafx.collections.FXCollections
@@ -7,8 +8,10 @@ import javafx.scene.control.ToggleButton
 import tornadofx.Controller
 import tornadofx.addClass
 import tornadofx.removeClass
+import java.io.FileWriter
 
 class MainController : Controller() {
+    var gson = Gson()
 
     var gamelist = mutableListOf<Game>(
             Game("Name 1", "Code 1", false, "A note"),
@@ -22,7 +25,7 @@ class MainController : Controller() {
     }
 
     fun saveToJson(){
-
+        gson.toJson(gamelist, FileWriter("src/main/kotlin/com/wit/steamspares/data/games.json"))
     }
 
     fun addToList(name : String, code : String, status : Boolean, notes : String? = null){

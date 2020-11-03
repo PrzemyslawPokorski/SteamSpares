@@ -102,20 +102,27 @@ class MainView : View("Steam Spares") {
 
                             //If adding new game
                             if(selectedGame == null){
-                                controller.addToList(
-                                        nameField.text, codeField.text, usedButton.isSelected, notesField.text
-                                )
+                                val name = nameField.text
+                                val code = codeField.text
+                                val used = usedButton.isSelected
+                                val note = notesField.text
+                                if (name != null && code != null)
+                                    controller.addToList(name, code, used, note)
                             }
                             //If changing existing
                             else{
-                                controller.updateInList(
-                                        selectedGame!!.id,
-                                        nameField.text, codeField.text, usedButton.isSelected, notesField.text
-                                )
+                                val id = selectedGame!!.id
+                                val name = nameField.text
+                                val code = codeField.text
+                                val used = usedButton.isSelected
+                                val note = notesField.text
+                                if (name != null && code != null)
+                                    controller.updateInList(id, name, code, used, note)
                             }
 
                             setTablesData()
                             clearSelections()
+                            controller.saveToJson()
                         }
                     }
 
@@ -128,6 +135,7 @@ class MainView : View("Steam Spares") {
 
                                 setTablesData()
                                 clearSelections()
+                                controller.saveToJson()
                             }
                         }
                     }
@@ -151,6 +159,7 @@ class MainView : View("Steam Spares") {
 
                 tabpane(){
                     tabClosingPolicy = TabPane.TabClosingPolicy.UNAVAILABLE
+
                     tab("Unused"){
                         tableview<Game>(unusedData) {
                             unusedTable = this
