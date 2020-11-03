@@ -152,14 +152,9 @@ class MainView : View("Steam Spares") {
                                     clearSelections()
                             }
 
-                            focusedProperty().addListener{
-                                obs, old, new ->
-                                if(!new)
-                                    clearSelections()
-                            }
-
                             fitToParentSize()
                         }
+                        onLeftClick { clearSelections() }
                     }
                     tab("Used"){
                         tableview<Game>(usedData) {
@@ -176,21 +171,14 @@ class MainView : View("Steam Spares") {
                                     //If status is not true/false then data is corrupted (?)
                                     setStatus(selectedItem?.status!!)
                                     notesField.text = selectedItem?.notes
-
-                                    println(selectedItem)
                                 }
                                 else
                                     clearSelections()
                             }
 
-                            focusedProperty().addListener{
-                                obs, old, new ->
-                                if(!new)
-                                    clearSelections()
-                            }
-
                             fitToParentSize()
                         }
+                        onLeftClick { clearSelections() }
                     }
                 }
             }
