@@ -124,6 +124,15 @@ class MainView : View("Steam Spares") {
 
                     button("Delete"){
                         addClass(Styles.button)
+
+                        action{
+                            if(selectedGame != null){
+                                controller.removeFromList(selectedGame?.id!!)
+
+                                setTablesData()
+                                clearSelections()
+                            }
+                        }
                     }
                 }
             }

@@ -32,7 +32,9 @@ class MainController : Controller() {
     }
 
     fun removeFromList(id : Int){
-
+        var game = gamelist.find { it.id == id }
+        if(game != null)
+            gamelist.remove(game)
     }
 
     fun updateInList(id : Int, name : String, code : String, status : Boolean, notes : String? = null){
