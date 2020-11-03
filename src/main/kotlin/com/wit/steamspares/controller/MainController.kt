@@ -1,6 +1,6 @@
 package com.wit.steamspares.controller
 
-import com.google.gson.Gson
+
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import com.wit.steamspares.model.Game
@@ -36,13 +36,13 @@ class MainController : Controller() {
     }
 
     fun removeFromList(id: Int){
-        var game = gamelist.find { it.id == id }
+        val game = gamelist.find { it.id == id }
         if(game != null)
             gamelist.remove(game)
     }
 
     fun updateInList(id: Int, name: String, code: String, status: Boolean, notes: String? = null){
-        var game = gamelist.find { it.id == id }
+        val game = gamelist.find { it.id == id }
         if (game != null) {
             game.name = name
             game.code = code
