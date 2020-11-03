@@ -5,6 +5,7 @@ import com.wit.steamspares.controller.MainController
 import com.wit.steamspares.model.Game
 import javafx.collections.FXCollections
 import javafx.event.EventHandler
+import javafx.geometry.Orientation
 import javafx.geometry.Pos
 import javafx.scene.control.*
 import tornadofx.*
@@ -30,207 +31,229 @@ class MainView : View("Steam Spares") {
     var selectedGame : Game? = null
 
     override val root = vbox {
+        setMinSize(200.0, 200.0)
         label(title) {
             topText = this
             addClass(Styles.heading)
             fitToParentWidth()
         }
 
-        hbox {
-            //LEFT PANEL
-            vbox {
-                minWidth = 300.0
-                fitToParentHeight()
-
-                //GAME NAME
-                hbox{
-                    label("Name") {
-                        addClass(Styles.field_label)
-                    }
-                    textfield(){
-                        nameField = this
-                        addClass(Styles.textfield)
-                    }
-                }
-
-                //GAME CODE
-                hbox{
-                    label("Code"){
-                        addClass(Styles.field_label)
-                    }
-                    textfield(){
-                        codeField = this
-                        addClass(Styles.textfield)
-                    }
-                }
-
-                //USED STATUS BUTTON
-                hbox{
-                    label("Status"){
-                        addClass(Styles.field_label)
-                    }
-                    togglebutton("Unused"){
-                        usedButton = this
-
-                        addClass(Styles.toggle_unused)
-
-                        selectedProperty().addListener{ obs, old, new ->
-                            //Filter used and unused list by name contains?
-                            setStatus(new, true)
-                        }
-                    }
-                }
-
-                //GAME NOTES
-                hbox{
-                    label("Notes"){
-                        addClass(Styles.field_label)
-                    }
-                    textfield(){
-                        notesField = this
-
-                        addClass(Styles.textfield)
-                    }
-                }
-
-                //SAVE/DELETE BUTTONS
-                hbox{
-                    alignment = Pos.CENTER
-                    button("Save") {
-                        addClass(Styles.button)
-
-                        action {
-
-                            val name = nameField.text
-                            val code = codeField.text
-                            val used = usedButton.isSelected
-                            val note = notesField.text
-
-                            //If adding new game
-                            if(selectedGame == null){
-                                if (name != null && code != null && name != "" && code != "")
-                                    controller.addToList(name, code, used, note)
-                            }
-                            //If changing existing
-                            else{
-                                val id = selectedGame!!.id
-                                if (name != null && code != null && name != "" && code != "")
-                                    controller.updateInList(id, name, code, used, note)
-                            }
-
-                            if (name != null && code != null && name != "" && code != "") {
-                                setTablesData()
-                                clearSelections()
-                                controller.saveToJson()
-                            }
-                            else{
-                                alert(Alert.AlertType.WARNING, "Empty fields not allowed",
-                                        "Name and Code fields can not be empty!")
-                            }
-                        }
-                    }
-
-                    button("Delete"){
-                        addClass(Styles.button)
-
-                        action{
-                            if(selectedGame != null){
-                                controller.removeFromList(selectedGame?.id!!)
-
-                                setTablesData()
-                                clearSelections()
-                                controller.saveToJson()
-                            }
-                        }
-                    }
-                }
-            }
-
-            //RIGHT PANEL
-            vbox {
+        vbox {
+            fitToParentSize()
+            hbox(30) {
                 fitToParentSize()
 
-                textfield {
-                    fitToParentWidth()
+                //LEFT PANEL
+                vbox {
+                    alignment = Pos.CENTER
+                    minWidth = 300.0
+                    fitToParentHeight()
 
-                    textProperty().addListener{ obs, old, new ->
-                        //Filter used and unused list by name contains?
-                        println("Filter: " + new)
-                        setTablesData(new)
+                    //GAME NAME
+                    hbox {
+                        label("Name") {
+                            addClass(Styles.field_label)
+                        }
+                        textfield() {
+                            nameField = this
+                            addClass(Styles.textfield)
+                        }
+                    }
+
+                    //GAME CODE
+                    hbox {
+                        label("Code") {
+                            addClass(Styles.field_label)
+                        }
+                        textfield() {
+                            codeField = this
+                            addClass(Styles.textfield)
+                        }
+                    }
+
+                    //USED STATUS BUTTON
+                    hbox {
+                        label("Status") {
+                            addClass(Styles.field_label)
+                        }
+                        togglebutton("Unused") {
+                            usedButton = this
+
+                            addClass(Styles.toggle_unused)
+
+                            selectedProperty().addListener { obs, old, new ->
+                                //Filter used and unused list by name contains?
+                                setStatus(new, true)
+                            }
+                        }
+                    }
+
+                    //GAME NOTES
+                    hbox {
+                        label("Notes") {
+                            addClass(Styles.field_label)
+                        }
+                        textfield() {
+                            notesField = this
+
+                            addClass(Styles.textfield)
+                        }
+                    }
+
+                    //SAVE/DELETE BUTTONS
+                    hbox(20) {
+                        alignment = Pos.CENTER
+                        button("Save") {
+                            addClass(Styles.button)
+
+                            action {
+
+                                val name = nameField.text
+                                val code = codeField.text
+                                val used = usedButton.isSelected
+                                val note = notesField.text
+
+                                //If adding new game
+                                if (selectedGame == null) {
+                                    if (name != null && code != null && name != "" && code != "")
+                                        controller.addToList(name, code, used, note)
+                                }
+                                //If changing existing
+                                else {
+                                    val id = selectedGame!!.id
+                                    if (name != null && code != null && name != "" && code != "")
+                                        controller.updateInList(id, name, code, used, note)
+                                }
+
+                                if (name != null && code != null && name != "" && code != "") {
+                                    setTablesData()
+                                    clearSelections()
+                                    controller.saveToJson()
+                                } else {
+                                    alert(Alert.AlertType.WARNING, "Empty fields not allowed",
+                                            "Name and Code fields can not be empty!")
+                                }
+                            }
+                        }
+
+                        button("Delete") {
+                            addClass(Styles.button)
+
+                            action {
+                                if (selectedGame != null) {
+                                    controller.removeFromList(selectedGame?.id!!)
+
+                                    setTablesData()
+                                    clearSelections()
+                                    controller.saveToJson()
+                                }
+                            }
+                        }
                     }
                 }
 
-                tabpane(){
-                    tabClosingPolicy = TabPane.TabClosingPolicy.UNAVAILABLE
+                separator {
+                    orientation = Orientation.VERTICAL
+                }
 
-                    tab("Unused"){
-                        tableview<Game>(unusedData) {
-                            unusedTable = this
+                //RIGHT PANEL
+                vbox(10) {
+                    fitToParentSize()
+                    alignment = Pos.CENTER
 
-                            readonlyColumn("Name", Game::name)
-                            readonlyColumn("Code", Game::code)
-                            readonlyColumn("Notes", Game::notes)
+                    textfield {
+                        fitToParentWidth()
 
-                            onLeftClick {
-                                if(selectedItem != null && selectedItem != selectedGame) {
-                                    nameField.text = selectedItem?.name ?: "Name not given"
-                                    codeField.text = selectedItem?.code ?: "Code missing"
-                                    //If status is not true/false then data is corrupted (?)
-                                    setStatus(selectedItem?.status!!)
-                                    notesField.text = selectedItem?.notes
+                        promptText = "Filter by ..."
 
-                                    selectedGame = selectedItem
+                        textProperty().addListener { obs, old, new ->
+                            //Filter used and unused list by name contains?
+                            println("Filter: " + new)
+                            setTablesData(new)
+                        }
+                    }
+
+                    tabpane() {
+                        tabClosingPolicy = TabPane.TabClosingPolicy.UNAVAILABLE
+                        fitToParentSize()
+
+                        tab("Unused") {
+                            tableview<Game>(unusedData) {
+                                unusedTable = this
+                                fitToParentSize()
+
+                                readonlyColumn("Name", Game::name)
+                                readonlyColumn("Code", Game::code)
+                                readonlyColumn("Notes", Game::notes)
+
+                                onLeftClick {
+                                    if (selectedItem != null && selectedItem != selectedGame) {
+                                        nameField.text = selectedItem?.name ?: "Name not given"
+                                        codeField.text = selectedItem?.code ?: "Code missing"
+                                        //If status is not true/false then data is corrupted (?)
+                                        setStatus(selectedItem?.status!!)
+                                        notesField.text = selectedItem?.notes
+
+                                        selectedGame = selectedItem
+                                    } else
+                                        clearSelections()
                                 }
-                                else
-                                    clearSelections()
-                            }
 
-                            onUserSelect {
-                                val c: Clipboard = Toolkit.getDefaultToolkit().getSystemClipboard()
-                                val clip = selectedItem?.name + ": " + selectedItem?.code
-                                c.setContents(StringSelection(clip), StringSelection(clip))
-                                topText.text = "Code Copied !"
-                                //TODO: Find a way to display tooltip and hide after a while on double click
+                                onUserSelect {
+                                    val c: Clipboard = Toolkit.getDefaultToolkit().getSystemClipboard()
+                                    val clip = selectedItem?.name + ": " + selectedItem?.code
+                                    c.setContents(StringSelection(clip), StringSelection(clip))
+                                    topText.text = "Code Copied !"
+                                    //TODO: Find a way to display tooltip and hide after a while on double click
 //                                tooltip("Code copied to clipboard!"){
 //                                    onShown = EventHandler {
 //                                        println("Shown")
 //                                        this.text = ""
 //                                    }
 //                                }
-                            }
-
-                            fitToParentSize()
-                        }
-                        onLeftClick { clearSelections() }
-                    }
-                    tab("Used"){
-                        tableview<Game>(usedData) {
-                            usedTable = this
-
-                            readonlyColumn("Name", Game::name)
-                            readonlyColumn("Code", Game::code)
-                            readonlyColumn("Notes", Game::notes)
-
-                            onLeftClick {
-                                if(selectedItem != null && selectedItem != selectedGame) {
-                                    nameField.text = selectedItem?.name ?: "Name not given"
-                                    codeField.text = selectedItem?.code ?: "Code missing"
-                                    //If status is not true/false then data is corrupted (?)
-                                    setStatus(selectedItem?.status!!)
-                                    notesField.text = selectedItem?.notes
-
-                                    selectedGame = selectedItem
                                 }
-                                else
-                                    clearSelections()
                             }
-
-                            fitToParentSize()
+                            onLeftClick { clearSelections() }
                         }
-                        onLeftClick { clearSelections() }
+                        tab("Used") {
+                            tableview<Game>(usedData) {
+                                usedTable = this
+
+                                readonlyColumn("Name", Game::name) {
+                                    prefWidth = 160.0
+                                }
+                                readonlyColumn("Code", Game::code) {
+                                    prefWidth = 100.0
+                                }
+                                readonlyColumn("Notes", Game::notes)
+
+                                onLeftClick {
+                                    if (selectedItem != null && selectedItem != selectedGame) {
+                                        nameField.text = selectedItem?.name ?: "Name not given"
+                                        codeField.text = selectedItem?.code ?: "Code missing"
+                                        //If status is not true/false then data is corrupted (?)
+                                        setStatus(selectedItem?.status!!)
+                                        notesField.text = selectedItem?.notes
+
+                                        selectedGame = selectedItem
+                                    } else
+                                        clearSelections()
+                                }
+
+                                fitToParentSize()
+                            }
+                            onLeftClick { clearSelections() }
+                        }
                     }
                 }
+
+                //Styling only vbox - no idea how to do margins
+                vbox {}
             }
+
+            //Styling only vbox - no idea how to do margins
+            separator { minHeight = 20.0 }
+            vbox{}
         }
     }
 
