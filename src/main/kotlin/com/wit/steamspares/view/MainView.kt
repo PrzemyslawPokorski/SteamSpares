@@ -121,7 +121,8 @@ class MainView : View("Steam Spares") {
                                 controller.saveToJson()
                             }
                             else{
-                                //TODO: Give some warning that name and code can't be null
+                                alert(Alert.AlertType.WARNING, "Empty fields not allowed",
+                                "Name and Code fields can not be empty!")
                             }
                         }
                     }
