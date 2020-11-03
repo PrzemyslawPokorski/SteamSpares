@@ -3,10 +3,11 @@ package com.wit.steamspares.view
 import com.wit.steamspares.app.Styles
 import com.wit.steamspares.controller.MainController
 import com.wit.steamspares.model.Game
+import javafx.collections.FXCollections
 //import com.wit.steamspares.model.GameModel
 import javafx.geometry.Pos
+import javafx.scene.control.TableView
 import javafx.scene.control.TextField
-import javafx.scene.control.Toggle
 import javafx.scene.control.ToggleButton
 import tornadofx.*
 
@@ -17,13 +18,28 @@ class MainView : View("Steam Spares") {
     var nameField : TextField by singleAssign()
     var codeField : TextField by singleAssign()
     var notesField : TextField by singleAssign()
+    var searchField : TextField by singleAssign()
     var usedButton : ToggleButton by singleAssign()
-    var games = listOf(
+    var usedTable : TableView<Game> by singleAssign()
+    var unusedTable : TableView<Game> by singleAssign()
+
+    var games = mutableListOf(
             Game(1, "Name 1", "Code 1", false, "A note"),
             Game(2, "Name 2", "Code 2", false, "A note"),
             Game(3, "Name 3", "Code 3", true),
             Game(4, "Name 3", "Code 3", false)
     )
+
+    val usedData = FXCollections.observableArrayList<Game>()
+    val unusedData = FXCollections.observableArrayList<Game>()
+
+    init {
+        var (used, unused) = games.partition { it.status }
+
+        unusedData.setAll(unused)
+        usedData.setAll(used)
+    }
+
 
     override val root = vbox {
         label(title) {
@@ -100,13 +116,30 @@ class MainView : View("Steam Spares") {
             }
 
             //RIGHT PANEL
-            hbox {
-                var (used, unused) = games.partition { it.status }
+            vbox {
+                fitToParentSize()
+
+                textfield {
+                    fitToParentWidth()
+
+                    textProperty().addListener{
+                        obs, old, new ->
+                        //Filter used and unused list by name contains?
+                        println("Filter: " + new)
+                        var filtered = games.filter { it.name.contains(new, ignoreCase = true) }
+                        var (used, unused) = filtered.partition { it.status }
+
+                        unusedData.setAll(unused)
+                        usedData.setAll(used)
+                    }
+                }
 
                 tabpane(){
                     tab("Unused"){
-                        tableview<Game>(unused.asObservable()) {
-                            readonlyColumn("Name", Game::name).makeEditable()
+                        tableview<Game>(unusedData) {
+                            unusedTable = this
+
+                            readonlyColumn("Name", Game::name)
                             readonlyColumn("Code", Game::code)
                             readonlyColumn("Notes", Game::notes)
 
@@ -122,7 +155,9 @@ class MainView : View("Steam Spares") {
                         }
                     }
                     tab("Used"){
-                        tableview<Game>(used.asObservable()) {
+                        tableview<Game>(usedData) {
+                            usedTable = this
+
                             readonlyColumn("Name", Game::name)
                             readonlyColumn("Code", Game::code)
                             readonlyColumn("Notes", Game::notes)

@@ -2,6 +2,7 @@ package com.wit.steamspares.controller
 
 import com.wit.steamspares.app.Styles
 import com.wit.steamspares.model.Game
+import javafx.collections.FXCollections
 import javafx.scene.control.ToggleButton
 import tornadofx.Controller
 import tornadofx.addClass
