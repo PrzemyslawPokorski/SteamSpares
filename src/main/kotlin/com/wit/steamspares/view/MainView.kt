@@ -275,14 +275,18 @@ class MainView : View("Steam Spares") {
 
     fun setTablesData(filter: String = ""){
         var filtered = controller.gamelist.filter {
-            (it.name.contains(filter, ignoreCase = true)) ||
-                    ((it.notes != null) && (it.notes!!.contains(filter)))
+            (key, value) ->
+            (value.name.contains(filter, ignoreCase = true)) ||
+                    ((value.notes != null) && (value.notes!!.contains(filter)))
         }
-        filtered = filtered.sortedBy { it.name }
-        var (used, unused) = filtered.partition { it.status }
+        filtered = filtered.toSortedMap()
+        println(filtered)
+        var (used, unused) = filtered.asSequence().partition { (key, value) -> value.status }
 
-        unusedData.setAll(unused)
-        usedData.setAll(used)
+        println(used)
+
+//        unusedData.setAll(unused)
+//        usedData.setAll(used)
     }
 
     fun clearSelections(){

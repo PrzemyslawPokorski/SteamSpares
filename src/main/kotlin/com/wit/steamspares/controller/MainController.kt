@@ -11,9 +11,10 @@ import java.io.IOException
 
 class MainController : Controller() {
     var gson = GsonBuilder().setPrettyPrinting().create()
-    var gamelist = loadFromJson()
+//    var gamelist = loadFromJson()
+    var gamelist = mutableMapOf(123456 to Game("Game 1", "Code 1", false))
 
-    fun loadFromJson() : MutableList<Game>{
+    fun loadFromJson() : MutableMap<Int, Game>{
         val jsonString: String
         try {
             jsonString = File("src/main/kotlin/com/wit/steamspares/data/games.json").bufferedReader().use { it.readText() }
@@ -22,7 +23,7 @@ class MainController : Controller() {
         } catch (ioException: IOException) {
             ioException.printStackTrace()
         }
-        return mutableListOf()
+        return mutableMapOf()
     }
 
     fun saveToJson(){
@@ -32,22 +33,15 @@ class MainController : Controller() {
 
     fun addToList(name: String, code: String, status: Boolean, notes: String? = null){
         val newGame = Game(name, code, status, notes)
-        gamelist.add(newGame)
+        gamelist[code.hashCode()] = newGame
     }
 
     fun removeFromList(id: Int){
-        val game = gamelist.find { it.id == id }
-        if(game != null)
-            gamelist.remove(game)
+        gamelist.remove(id)
     }
 
     fun updateInList(id: Int, name: String, code: String, status: Boolean, notes: String? = null){
-        val game = gamelist.find { it.id == id }
-        if (game != null) {
-            game.name = name
-            game.code = code
-            game.status = status
-            game.notes = notes
-        }
+        val game = Game(name, code, status, notes)
+        gamelist[code.hashCode()] = game
     }
 }
