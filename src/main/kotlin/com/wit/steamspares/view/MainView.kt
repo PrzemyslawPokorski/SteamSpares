@@ -6,6 +6,7 @@ import com.wit.steamspares.model.Game
 import javafx.collections.FXCollections
 //import com.wit.steamspares.model.GameModel
 import javafx.geometry.Pos
+import javafx.scene.control.TableColumn
 import javafx.scene.control.TableView
 import javafx.scene.control.TextField
 import javafx.scene.control.ToggleButton
@@ -32,14 +33,6 @@ class MainView : View("Steam Spares") {
 
     val usedData = FXCollections.observableArrayList<Game>()
     val unusedData = FXCollections.observableArrayList<Game>()
-
-    init {
-        var (used, unused) = games.partition { it.status }
-
-        unusedData.setAll(unused)
-        usedData.setAll(used)
-    }
-
 
     override val root = vbox {
         label(title) {
@@ -181,5 +174,9 @@ class MainView : View("Steam Spares") {
     init {
         setWindowMinSize(1200, 800)
 
+        var (used, unused) = games.partition { it.status }
+
+        unusedData.setAll(unused)
+        usedData.setAll(used)
     }
 }
