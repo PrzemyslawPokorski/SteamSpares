@@ -79,8 +79,10 @@ class MainView : View("Steam Spares") {
 
                         addClass(Styles.toggle_unused)
 
-                        action{
-                            controller.statusToggle(this)
+                        selectedProperty().addListener{
+                            obs, old, new ->
+                            //Filter used and unused list by name contains?
+                            setStatus(new, true)
                         }
                     }
                 }
@@ -104,7 +106,7 @@ class MainView : View("Steam Spares") {
                         addClass(Styles.button)
 
                         action {
-
+                            println(unusedTable.selectedItem)
                         }
                     }
 
@@ -139,11 +141,21 @@ class MainView : View("Steam Spares") {
                             readonlyColumn("Notes", Game::notes)
 
                             onLeftClick {
-                                nameField.text = selectedItem?.name ?: "Name not given"
-                                codeField.text = selectedItem?.code ?: "Code missing"
-                                if(selectedItem?.status != usedButton.isSelected)
-                                    controller.statusToggle(usedButton, true)
-                                notesField.text = selectedItem?.notes
+                                if(selectedItem != null) {
+                                    nameField.text = selectedItem?.name ?: "Name not given"
+                                    codeField.text = selectedItem?.code ?: "Code missing"
+                                    //If status is not true/false then data is corrupted (?)
+                                    setStatus(selectedItem?.status!!)
+                                    notesField.text = selectedItem?.notes
+                                }
+                                else
+                                    clearSelections()
+                            }
+
+                            focusedProperty().addListener{
+                                obs, old, new ->
+                                if(!new)
+                                    clearSelections()
                             }
 
                             fitToParentSize()
@@ -158,11 +170,23 @@ class MainView : View("Steam Spares") {
                             readonlyColumn("Notes", Game::notes)
 
                             onLeftClick {
-                                nameField.text = selectedItem?.name ?: "Name not given"
-                                codeField.text = selectedItem?.code ?: "Code missing"
-                                if(selectedItem?.status != usedButton.isSelected)
-                                    controller.statusToggle(usedButton, true)
-                                notesField.text = selectedItem?.notes
+                                if(selectedItem != null) {
+                                    nameField.text = selectedItem?.name ?: "Name not given"
+                                    codeField.text = selectedItem?.code ?: "Code missing"
+                                    //If status is not true/false then data is corrupted (?)
+                                    setStatus(selectedItem?.status!!)
+                                    notesField.text = selectedItem?.notes
+
+                                    println(selectedItem)
+                                }
+                                else
+                                    clearSelections()
+                            }
+
+                            focusedProperty().addListener{
+                                obs, old, new ->
+                                if(!new)
+                                    clearSelections()
                             }
 
                             fitToParentSize()
@@ -177,6 +201,7 @@ class MainView : View("Steam Spares") {
         setWindowMinSize(1200, 800)
 
         setTablesData()
+        clearSelections()
     }
 
     fun setTablesData(filter : String = ""){
@@ -188,5 +213,33 @@ class MainView : View("Steam Spares") {
 
         unusedData.setAll(unused)
         usedData.setAll(used)
+    }
+
+    fun clearSelections(){
+        usedTable.selectionModel.clearSelection()
+        unusedTable.selectionModel.clearSelection()
+
+        nameField.clear()
+        codeField.clear()
+        setStatus(false)
+        notesField.clear()
+
+    }
+
+    fun setStatus(used : Boolean = false, styleOnly : Boolean = false){
+        if (used){
+            usedButton.text = "Used"
+            usedButton.removeClass(Styles.toggle_unused)
+            usedButton.addClass(Styles.toggle_used)
+            if(!styleOnly)
+                usedButton.isSelected = true
+        }
+        else{
+            usedButton.text = "Unused"
+            usedButton.removeClass(Styles.toggle_used)
+            usedButton.addClass(Styles.toggle_unused)
+            if(!styleOnly)
+                usedButton.isSelected = false
+        }
     }
 }

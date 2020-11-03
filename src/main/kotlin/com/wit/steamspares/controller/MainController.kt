@@ -32,20 +32,4 @@ class MainController : Controller() {
     fun updateInList(id : Int, name : String, code : String, status : Boolean, notes : String? = null){
 
     }
-
-    fun statusToggle(btn : ToggleButton, toggle : Boolean = false){
-        if(toggle)
-            btn.isSelected = !btn.isSelected
-        println("?" + btn.isSelected)
-        if (btn.isSelected){
-            btn.text = "Used"
-            btn.removeClass(Styles.toggle_unused)
-            btn.addClass(Styles.toggle_used)
-        }
-        else{
-            btn.text = "Unused"
-            btn.addClass(Styles.toggle_used)
-            btn.addClass(Styles.toggle_unused)
-        }
-    }
 }
