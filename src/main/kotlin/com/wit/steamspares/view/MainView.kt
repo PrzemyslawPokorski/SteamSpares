@@ -3,8 +3,11 @@ package com.wit.steamspares.view
 import com.wit.steamspares.app.Styles
 import com.wit.steamspares.controller.MainController
 import com.wit.steamspares.model.Game
+import javafx.beans.Observable
+import javafx.beans.binding.Bindings
+import javafx.beans.value.ObservableIntegerValue
 import javafx.collections.FXCollections
-import javafx.event.EventHandler
+import javafx.collections.MapChangeListener
 import javafx.geometry.Orientation
 import javafx.geometry.Pos
 import javafx.scene.control.*
@@ -12,6 +15,7 @@ import tornadofx.*
 import java.awt.Toolkit
 import java.awt.datatransfer.Clipboard
 import java.awt.datatransfer.StringSelection
+
 
 class MainView : View("Steam Spares") {
     val controller : MainController by inject()
@@ -25,7 +29,7 @@ class MainView : View("Steam Spares") {
     var unusedTable : TableView<Game> by singleAssign()
     var topText : Label by singleAssign()
 
-    val usedData = FXCollections.observableArrayList<Game>()
+    val usedData = FXCollections.observableHashMap<Int, Game>()
     val unusedData = FXCollections.observableArrayList<Game>()
 
     var selectedGame : Game? = null
@@ -109,10 +113,10 @@ class MainView : View("Steam Spares") {
 
                             action {
 
-                                val name = nameField.text
-                                val code = codeField.text
+                                val name = nameField.text.trim()
+                                val code = codeField.text.trim()
                                 val used = usedButton.isSelected
-                                val note = notesField.text
+                                val note = notesField.text.trim()
 
                                 //If adding new game
                                 if (selectedGame == null) {
@@ -126,13 +130,15 @@ class MainView : View("Steam Spares") {
                                         controller.updateInList(id, name, code, used, note)
                                 }
 
-                                if (name != null && code != null && name != "" && code != "") {
+                                if (name != null && code != null && !name.trim().isEmpty() && !code.trim().isEmpty()) {
                                     setTablesData()
                                     clearSelections()
                                     controller.saveToJson()
                                 } else {
-                                    alert(Alert.AlertType.WARNING, "Empty fields not allowed",
-                                            "Name and Code fields can not be empty!")
+                                    alert(
+                                        Alert.AlertType.WARNING, "Empty fields not allowed",
+                                        "Name and Code fields can not be empty!"
+                                    )
                                 }
                             }
                         }
@@ -223,8 +229,14 @@ class MainView : View("Steam Spares") {
                             onLeftClick { clearSelections() }
                         }
                         tab("Used") {
-                            tableview<Game>(usedData) {
+                            tableview<Game>() {
                                 usedTable = this
+
+                                val c1 = TableColumn<Game, Int>("ID")
+                                //TODO: How to setup cell factory in kotlin?!
+//                                c1.setCellValueFactory {
+//
+//                                }
 
                                 readonlyColumn("Name", Game::name) {
                                     prefWidth = 250.0
@@ -274,8 +286,7 @@ class MainView : View("Steam Spares") {
     }
 
     fun setTablesData(filter: String = ""){
-        var filtered = controller.gamelist.filter {
-            (key, value) ->
+        var filtered = controller.gamelist.filter { (key, value) ->
             (value.name.contains(filter, ignoreCase = true)) ||
                     ((value.notes != null) && (value.notes!!.contains(filter)))
         }
@@ -286,7 +297,8 @@ class MainView : View("Steam Spares") {
         println(used)
 
 //        unusedData.setAll(unused)
-//        usedData.setAll(used)
+        //put all filtered in for now
+        usedData.putAll(filtered)
     }
 
     fun clearSelections(){
