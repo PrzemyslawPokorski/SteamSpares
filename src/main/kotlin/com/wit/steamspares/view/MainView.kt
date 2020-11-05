@@ -109,14 +109,14 @@ class MainView : View("Steam Spares") {
 
                             action {
 
-                                val name = nameField.text
-                                val code = codeField.text
+                                val name = nameField.text.trim()
+                                val code = codeField.text.trim()
                                 val used = usedButton.isSelected
-                                val note = notesField.text
+                                val note = notesField.text.trim()
 
                                 //If adding new game
                                 if (selectedGame == null) {
-                                    if (name != null && code != null && name != "" && code != "")
+                                    if (name != null && code != null && name.isNotEmpty() && code.isNotEmpty())
                                         controller.addToList(name, code, used, note)
                                 }
                                 //If changing existing
@@ -126,7 +126,7 @@ class MainView : View("Steam Spares") {
                                         controller.updateInList(id, name, code, used, note)
                                 }
 
-                                if (name != null && code != null && name != "" && code != "") {
+                                if (name != null && code != null && name.isNotEmpty() && code.isNotEmpty()) {
                                     setTablesData()
                                     clearSelections()
                                     controller.saveToJson()
