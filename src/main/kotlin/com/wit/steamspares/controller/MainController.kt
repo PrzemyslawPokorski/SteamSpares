@@ -13,6 +13,7 @@ class MainController : Controller() {
     var gson = GsonBuilder().setPrettyPrinting().create()
     var gamelist = loadFromJson()
 
+
     fun loadFromJson() : MutableList<Game>{
         val jsonString: String
         try {
@@ -44,8 +45,8 @@ class MainController : Controller() {
     fun updateInList(id: Int, name: String, code: String, status: Boolean, notes: String? = null){
         val game = gamelist.find { it.id == id }
         if (game != null) {
-            game.name = name
-            game.code = code
+            game.name = if(name.isEmpty()) "Name not given" else name
+            game.code = if(code.isEmpty()) "Code not given" else code
             game.status = status
             game.notes = notes
         }
