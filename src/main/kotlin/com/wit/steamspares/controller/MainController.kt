@@ -70,12 +70,9 @@ class MainController : Controller() {
             game.notes = notes
             game.url = getGameUrl(game.appid)
         }
-
-        println("Game (${game?.id}) ${game?.name} url: ${game?.url}")
     }
 
     fun findSteamId(name : String) : Int{
-        println("Steam apps count: ${steamList.size}")
         //Make lower case to avoid case mismatch
         //Filter down to names containing
         val apps = steamList.filter { it.name.toLowerCase().contains(name.toLowerCase()) }

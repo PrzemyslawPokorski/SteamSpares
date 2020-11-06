@@ -177,7 +177,6 @@ class MainView : View("Steam Spares") {
 
                         textProperty().addListener { obs, old, new ->
                             //Filter used and unused list by name contains?
-                            println("Filter: " + new)
                             setTablesData(new)
                         }
                     }
@@ -207,7 +206,7 @@ class MainView : View("Steam Spares") {
                                         graphic = hyperlink("Steam page") {
                                             setOnAction {
                                                 val gameView = GameWebView(link)
-                                                println(link)
+
                                                 val webWindow = gameView.openWindow()
                                                 webWindow?.minWidth = 1200.0
                                                 webWindow?.minHeight = 900.0
@@ -257,6 +256,21 @@ class MainView : View("Steam Spares") {
                                 }
                                 readonlyColumn("Notes", Game::notes){
                                     prefWidth = 300.0
+                                }
+
+                                readonlyColumn("Link", Game::url){
+                                    cellFormat {
+                                            link ->
+                                        graphic = hyperlink("Steam page") {
+                                            setOnAction {
+                                                val gameView = GameWebView(link)
+
+                                                val webWindow = gameView.openWindow()
+                                                webWindow?.minWidth = 1200.0
+                                                webWindow?.minHeight = 900.0
+                                            }
+                                        }
+                                    }
                                 }
 
                                 onLeftClick {
