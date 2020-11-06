@@ -107,6 +107,7 @@ class MainView : View("Steam Spares") {
                         button("Save") {
                             addClass(Styles.button)
 
+                            val keycodePattern = """^[\w\d]{5}(-[\w\d]{5}){2}((-[\w\d]{5}){2})?${'$'}""".toRegex()
 
                             action {
 
@@ -115,26 +116,31 @@ class MainView : View("Steam Spares") {
                                 val used = usedButton.isSelected
                                 val note = notesField.text.trim()
 
-                                //If adding new game
-                                if (selectedGame == null) {
-                                    if (name != null && code != null && name.isNotEmpty() && code.isNotEmpty())
-                                        controller.addToList(name, code, used, note)
+                                if (name == null || code == null || name.isEmpty() || code.isEmpty()) {
+                                    alert(Alert.AlertType.WARNING, "Empty fields not allowed",
+                                        "Name and Code fields can not be empty!")
                                 }
-                                //If changing existing
-                                else {
-                                    val id = selectedGame!!.id
-
-                                    if (name != null && code != null && name != "" && code != "")
-                                        controller.updateInList(id, name, code, used, note)
+                                else if(!(code.matches(keycodePattern))){
+                                    alert(Alert.AlertType.WARNING, "Unknown code pattern",
+                                        "Your code doesn't match any steam code patterns")
                                 }
 
-                                if (name != null && code != null && name.isNotEmpty() && code.isNotEmpty()) {
+                                else{
+                                    //If adding new game
+                                    if (selectedGame == null)
+                                            controller.addToList(name, code, used, note)
+
+                                    //If changing existing
+                                    else {
+                                        val id = selectedGame!!.id
+
+                                        if (name != null && code != null && name != "" && code != "")
+                                            controller.updateInList(id, name, code, used, note)
+                                    }
+
                                     setTablesData()
                                     clearSelections()
                                     controller.saveToJson()
-                                } else {
-                                    alert(Alert.AlertType.WARNING, "Empty fields not allowed",
-                                            "Name and Code fields can not be empty!")
                                 }
                             }
                         }
