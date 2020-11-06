@@ -11,6 +11,8 @@ import tornadofx.*
 import java.awt.Toolkit
 import java.awt.datatransfer.Clipboard
 import java.awt.datatransfer.StringSelection
+import javax.swing.Action
+import kotlin.properties.ObservableProperty
 
 class MainView : View("Steam Spares") {
     val controller : MainController by inject()
@@ -150,16 +152,6 @@ class MainView : View("Steam Spares") {
                                 }
                             }
                         }
-
-                        button("Web") {
-                            addClass(Styles.button)
-
-                            action {
-                                val gameView = GameWebView()
-                                println(controller.getGameUrl("SENRAN KAGURA "))
-                                gameView.openWindow()
-                            }
-                        }
                     }
                 }
 
@@ -201,6 +193,19 @@ class MainView : View("Steam Spares") {
                                 }
                                 readonlyColumn("Notes", Game::notes){
                                     prefWidth = 300.0
+                                }
+
+                                readonlyColumn("Link", Game::url){
+                                    cellFormat {
+                                        link ->
+                                        graphic = hyperlink("Steam page") {
+                                            setOnAction {
+                                                val gameView = GameWebView(link)
+                                                println(link)
+                                                gameView.openWindow()
+                                            }
+                                        }
+                                    }
                                 }
 
                                 onLeftClick {

@@ -76,7 +76,7 @@ class MainController : Controller() {
     fun findSteamId(name : String) : Int{
         println("Steam apps count: ${steamList.size}")
         //Make lower case to avoid case mismatch
-        val app = steamList.find { it.name.toLowerCase().contains(name.toLowerCase()) }
+        val app = steamList.find { it.name.toLowerCase() == name.toLowerCase() }
         if (app != null) {
             return app.appid
         }
