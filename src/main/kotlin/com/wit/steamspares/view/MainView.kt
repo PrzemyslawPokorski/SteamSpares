@@ -177,7 +177,7 @@ class MainView : View("Steam Spares") {
 
                         textProperty().addListener { obs, old, new ->
                             //Filter used and unused list by name contains?
-                            setTablesData(new)
+                            setTablesData(new.trim())
                         }
                     }
 
