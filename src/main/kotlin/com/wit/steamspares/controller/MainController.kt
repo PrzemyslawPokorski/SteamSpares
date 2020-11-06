@@ -9,6 +9,7 @@ import tornadofx.Controller
 import java.io.File
 import java.io.IOException
 import java.net.URL
+import java.util.function.Predicate
 
 
 class MainController : Controller() {
@@ -76,10 +77,17 @@ class MainController : Controller() {
     fun findSteamId(name : String) : Int{
         println("Steam apps count: ${steamList.size}")
         //Make lower case to avoid case mismatch
-        val app = steamList.find { it.name.toLowerCase() == name.toLowerCase() }
+        //Filter down to names containing
+        val apps = steamList.filter { it.name.toLowerCase().contains(name.toLowerCase()) }
+        val app = apps.find { it.name.toLowerCase() == name.toLowerCase() }
+        //If exact match exists, get appid
         if (app != null) {
             return app.appid
         }
+        //Else return "closest match" (first that was similar based on contain)
+        if(apps.isNotEmpty())
+            return apps[0].appid
+
         return 0
     }
 
