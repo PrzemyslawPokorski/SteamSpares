@@ -202,7 +202,9 @@ class MainView : View("Steam Spares") {
                                             setOnAction {
                                                 val gameView = GameWebView(link)
                                                 println(link)
-                                                gameView.openWindow()
+                                                val webWindow = gameView.openWindow()
+                                                webWindow?.minWidth = 1200.0
+                                                webWindow?.minHeight = 900.0
                                             }
                                         }
                                     }
