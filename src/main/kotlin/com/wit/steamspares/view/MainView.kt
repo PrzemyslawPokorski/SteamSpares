@@ -4,7 +4,6 @@ import com.wit.steamspares.app.Styles
 import com.wit.steamspares.controller.MainController
 import com.wit.steamspares.model.Game
 import javafx.collections.FXCollections
-import javafx.event.EventHandler
 import javafx.geometry.Orientation
 import javafx.geometry.Pos
 import javafx.scene.control.*
@@ -122,6 +121,7 @@ class MainView : View("Steam Spares") {
                                 //If changing existing
                                 else {
                                     val id = selectedGame!!.id
+
                                     if (name != null && code != null && name != "" && code != "")
                                         controller.updateInList(id, name, code, used, note)
                                 }
@@ -218,7 +218,7 @@ class MainView : View("Steam Spares") {
 
                                 onUserSelect {
                                     val c: Clipboard = Toolkit.getDefaultToolkit().getSystemClipboard()
-                                    val clip = selectedItem?.name + ": " + selectedItem?.code
+                                    val clip = selectedItem?.name + ": " + selectedItem?.code + " (" + selectedItem?.url + ")"
                                     c.setContents(StringSelection(clip), StringSelection(clip))
                                     topText.text = "Code Copied !"
                                     //TODO: Find a way to display tooltip and hide after a while on double click

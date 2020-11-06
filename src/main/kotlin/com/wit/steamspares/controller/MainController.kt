@@ -48,7 +48,8 @@ class MainController : Controller() {
     }
 
     fun addToList(name: String, code: String, status: Boolean, notes: String? = null){
-        val newGame = Game(name, code, status, notes)
+        val appid = findSteamId(name)
+        val newGame = Game(appid, name, code, status, notes)
         gamelist.add(newGame)
     }
 
@@ -58,19 +59,24 @@ class MainController : Controller() {
             gamelist.remove(game)
     }
 
-    fun updateInList(id: Int, name: String, code: String, status: Boolean, notes: String? = null){
+    fun updateInList(id : Int, name: String, code: String, status: Boolean, notes: String? = null){
         val game = gamelist.find { it.id == id }
         if (game != null) {
+            game.appid = findSteamId(name)
             game.name = if(name.isEmpty()) "Name not given" else name
             game.code = if(code.isEmpty()) "Code not given" else code
             game.status = status
             game.notes = notes
+            game.url = getGameUrl(game.appid)
         }
+
+        println("Game (${game?.id}) ${game?.name} url: ${game?.url}")
     }
 
     fun findSteamId(name : String) : Int{
         println("Steam apps count: ${steamList.size}")
-        val app = steamList.find { it.name.contains(name) }
+        //Make lower case to avoid case mismatch
+        val app = steamList.find { it.name.toLowerCase().contains(name.toLowerCase()) }
         if (app != null) {
             return app.appid
         }
@@ -81,5 +87,9 @@ class MainController : Controller() {
         var url = "https://store.steampowered.com/app/"
         url += findSteamId(name)
         return url
+    }
+
+    fun getGameUrl(id : Int) : String{
+        return "https://store.steampowered.com/app/$id"
     }
 }
