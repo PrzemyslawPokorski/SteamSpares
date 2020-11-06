@@ -70,10 +70,16 @@ class MainController : Controller() {
 
     fun findSteamId(name : String) : Int{
         println("Steam apps count: ${steamList.size}")
-        val app = steamList.find { it.name == name }
+        val app = steamList.find { it.name.contains(name) }
         if (app != null) {
             return app.appid
         }
         return 0
+    }
+
+    fun getGameUrl(name : String) : String{
+        var url = "https://store.steampowered.com/app/"
+        url += findSteamId(name)
+        return url
     }
 }

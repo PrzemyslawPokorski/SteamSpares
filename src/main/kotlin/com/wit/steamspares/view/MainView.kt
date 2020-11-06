@@ -156,7 +156,7 @@ class MainView : View("Steam Spares") {
 
                             action {
                                 val gameView = GameWebView()
-                                println(controller.findSteamId("SENRAN KAGURA Peach Ball - New Accessories Quintet"))
+                                println(controller.getGameUrl("SENRAN KAGURA "))
                                 gameView.openWindow()
                             }
                         }
