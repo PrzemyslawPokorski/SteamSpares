@@ -73,10 +73,9 @@ class MainController : Controller() {
     }
 
     fun findSteamId(name : String) : Int{
-        //Make lower case to avoid case mismatch
         //Filter down to names containing
-        val apps = steamList.filter { it.name.toLowerCase().contains(name.toLowerCase()) }
-        val app = apps.find { it.name.toLowerCase() == name.toLowerCase() }
+        val apps = steamList.filter { it.name.contains(name, ignoreCase = true) }
+        val app = apps.find { it.name.equals(name, ignoreCase = true) }
         //If exact match exists, get appid
         if (app != null) {
             return app.appid

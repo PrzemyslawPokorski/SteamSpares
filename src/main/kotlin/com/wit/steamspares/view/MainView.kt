@@ -313,7 +313,7 @@ class MainView : View("Steam Spares") {
     fun setTablesData(filter: String = ""){
         var filtered = controller.gamelist.filter {
             (it.name.contains(filter, ignoreCase = true)) ||
-                    ((it.notes != null) && (it.notes!!.contains(filter)))
+                    ((it.notes != null) && (it.notes!!.contains(filter, ignoreCase = true)))
         }
         filtered = filtered.sortedBy { it.name }
         var (used, unused) = filtered.partition { it.status }
