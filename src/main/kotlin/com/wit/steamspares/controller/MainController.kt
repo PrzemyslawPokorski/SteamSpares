@@ -13,6 +13,9 @@ class MainController : Controller() {
     var gson = GsonBuilder().setPrettyPrinting().create()
     var gamelist = loadFromJson()
 
+//    var steamList
+
+//    fun downloadSteamAppList() : List<>
 
     fun loadFromJson() : MutableList<Game>{
         val jsonString: String

@@ -150,6 +150,15 @@ class MainView : View("Steam Spares") {
                                 }
                             }
                         }
+
+                        button("Web") {
+                            addClass(Styles.button)
+
+                            action {
+                                val gameView = GameWebView()
+                                gameView.openWindow()
+                            }
+                        }
                     }
                 }
 
